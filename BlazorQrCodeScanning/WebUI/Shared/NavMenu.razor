@@ -1,0 +1,131 @@
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">My Hybrid App</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="QrCodeScanning">
+                <span class="oi oi-plus" aria-hidden="true"></span>QR Code Scanning
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string LocalBarcodeText;
+    private string devicesname;
+    private string Devicesversion;
+    private string Devicesmodel;
+    private string Devicetype;
+    private string DeviceManufa;
+    private string DeviceSerial;
+
+    private string Devicesplatform;
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+
+        var platform = Xamarin.Essentials.DeviceInfo.Platform;
+        var idiom = DeviceInfo.Idiom;
+        if (platform == DevicePlatform.Android)
+        {
+
+
+            devicesname = DeviceInfo.Name;
+            Devicesversion = DeviceInfo.VersionString;
+            Devicesmodel = DeviceInfo.Model;
+            Devicetype = DeviceInfo.DeviceType.ToString();
+            DeviceManufa = DeviceInfo.Manufacturer;
+
+            if (idiom == DeviceIdiom.Desktop)
+            {
+                Devicesplatform = DeviceIdiom.Desktop.ToString();
+            }
+            else if (idiom == DeviceIdiom.Phone)
+            {
+                Devicesplatform = DeviceIdiom.Phone.ToString();
+
+                try
+                {
+                    //camera permission
+                    var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+
+
+                    if (status != PermissionStatus.Granted)
+                    {
+                        status = await Permissions.RequestAsync<Permissions.Camera>();
+                    }
+                    if (status != PermissionStatus.Granted)
+                    {
+                        return;
+                    }
+
+
+                    
+
+
+
+                }
+                catch { }
+            }
+            else if (idiom == DeviceIdiom.Tablet)
+            {
+                Devicesplatform = DeviceIdiom.Tablet.ToString();
+                try
+                {
+                    var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+
+
+                    if (status != PermissionStatus.Granted)
+                    {
+                        status = await Permissions.RequestAsync<Permissions.Camera>();
+                    }
+                    if (status != PermissionStatus.Granted)
+                    {
+                        return;
+                    }
+                }
+                catch { }
+            }
+
+        }
+        else if (platform == DevicePlatform.Unknown)
+        {
+
+
+            if (idiom == DeviceIdiom.Unknown)
+            {
+                Devicesplatform = DeviceIdiom.Unknown.ToString();
+            }
+
+        }
+
+
+
+    }
+}

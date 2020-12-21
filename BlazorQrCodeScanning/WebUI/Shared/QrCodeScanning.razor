@@ -1,0 +1,28 @@
+﻿@page "/QrCodeScanning"
+
+@inject IJSRuntime JSRuntime
+<h3>QrCodeScanning</h3>
+
+<button class="btn btn-primary"
+        type="button"
+        @onclick="(() => ShowScanBarcode = !ShowScanBarcode)">
+    [扫码]
+</button>
+<input type="text" class="form-control" style="min-width: 100px;"
+       @bind-value="BarCode"
+       placeholder="条码" />
+@if (ShowScanBarcode)
+{
+
+    <BarcodeReader ScanResult="((e) => { BarCode=e; ShowScanBarcode = !ShowScanBarcode; })"
+                   ShowScanBarcode="ShowScanBarcode"
+                   Close="(()=>ShowScanBarcode=!ShowScanBarcode)" />
+}
+
+@code {
+    bool ShowScanBarcode { get; set; } = false;
+
+
+    public string? BarCode { get; set; }
+
+}
